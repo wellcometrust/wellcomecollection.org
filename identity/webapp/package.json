@@ -12,6 +12,7 @@
     "test:updateSnapshots": "yarn test -- --updateSnapshot"
   },
   "dependencies": {
+    "@auth0/nextjs-auth0": "^1.0.0-beta.1",
     "@types/react": "^16.9.35",
     "axios": "^0.21.1",
     "next": "^10.0.1",

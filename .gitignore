@@ -19,6 +19,7 @@ pa11y-report.html
 
 # Privates
 .env
+.env.local
 
 # Next export
 out/

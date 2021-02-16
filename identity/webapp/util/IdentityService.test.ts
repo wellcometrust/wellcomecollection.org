@@ -26,12 +26,12 @@ describe('IdentityService', () => {
     );
     expect(mockedAxios.get).toHaveBeenCalledWith(
       'https://example.com/api/users/me',
-      {
+      expect.objectContaining({
         headers: {
           Authorization: 'Bearer ACCESS_TOKEN',
           'x-api-key': 'SUPER_SECRET_KEY',
         },
-      }
+      })
     );
   });
 });

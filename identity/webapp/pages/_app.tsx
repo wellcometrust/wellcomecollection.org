@@ -1,13 +1,14 @@
 import { UserProvider } from '@auth0/nextjs-auth0';
 import { AppProps } from 'next/app';
 import '../styles.scss';
+import App from '@weco/common/views/pages/_app';
 
-function App({ Component, pageProps }: AppProps): JSX.Element {
+function AppWithUser(props: AppProps): JSX.Element {
   return (
     <UserProvider>
-      <Component {...pageProps} />
+      <App {...props} />
     </UserProvider>
   );
 }
 
-export default App;
+export default AppWithUser;

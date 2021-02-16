@@ -22,5 +22,8 @@
   "browserslist": [
     "last 2 versions",
     "iOS 8"
-  ]
+  ],
+  "devDependencies": {
+    "jest": "^26.6.3"
+  }
 }

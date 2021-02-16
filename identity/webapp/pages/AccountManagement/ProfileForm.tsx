@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import React, { useState, useEffect } from 'react';
 
 import { SolidButton } from '@weco/common/views/components/ButtonSolid/ButtonSolid';
@@ -10,8 +9,8 @@ import SpacingComponent from '@weco/common/views/components/SpacingComponent/Spa
 import { ErrorMessage } from '../Shared/ErrorMessage';
 import { SuccessMessage } from '../Shared/SuccessMessage';
 import { PasswordInput } from '../Shared/PasswordInput';
-import { useUpdateUserInfo } from '../hooks/useUpdateUserInfo';
 import { UserInfo } from '../hooks/useUserInfo';
+import { useUpdateUserInfo } from '../hooks/useUpdateUserInfo';
 
 const validEmailPattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -32,16 +31,16 @@ const ExistingData = ({ label, value }: ExistingDataProps) => (
 );
 
 export type ProfileFormProps = UserInfo & {
-  onUpdate?: () => void;
+  onUpdate: () => void;
 };
 
-export const ProfileForm: React.FC<ProfileFormProps> = ({
+export function ProfileForm({
   firstName,
   lastName,
   email,
   barcode,
   onUpdate,
-}: ProfileFormProps) => {
+}: ProfileFormProps): JSX.Element {
   const [newEmail, setNewEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [alreadyExists, setAlreadyExists] = useState<boolean>(false);
@@ -54,19 +53,22 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
   const [updateUserInfo] = useUpdateUserInfo();
 
   useEffect(() => {
-    setNewEmail(email || '');
+    setNewEmail(email);
   }, [email]);
 
   const handleEmailChange = (value: string) => {
     setNewEmail(value);
     setIsValid(validateEmail(value));
-    setIsSaved(false);
+    setAlreadyExists(false);
+    setIsSaved(value === email);
   };
 
   const onSaveSuccess = () => {
+    setIsIncorrectPassword(false);
     setIsUpdateSuccessful(true);
     setIsSaved(true);
-    onUpdate && onUpdate();
+    setPassword('');
+    onUpdate();
   };
 
   const onSaveFailure = (statusCode?: number) => {
@@ -84,17 +86,23 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
     }
   };
 
+  const canSave = isValid && !isSaved;
+
   const saveChanges = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsUpdateSuccessful(false);
-    updateUserInfo({ email, password, newEmail }, onSaveSuccess, onSaveFailure);
+    if (canSave) {
+      updateUserInfo(
+        { email: newEmail, password },
+        onSaveSuccess,
+        onSaveFailure
+      );
+    }
   };
 
   const deleteAccount = () => {
     // TODO: Delete Account
   };
-
-  const canSave = isValid && !isSaved;
 
   return (
     <div>
@@ -139,4 +147,4 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
       </form>
     </div>
   );
-};
+}

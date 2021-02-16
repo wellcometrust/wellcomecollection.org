@@ -58,9 +58,8 @@ describe('ProfileForm', () => {
     userEvent.click(saveButton);
 
     await waitFor(() => {
-      expect(mockedAxios.put).toBeCalledWith('/api/users/me', {
-        email: defaultProps.email,
-        newEmail: 'batman@justiceleague.com',
+      expect(mockedAxios.put).toBeCalledWith('/api/me', {
+        email: 'batman@justiceleague.com',
         password: 'D4rkKnight1',
       });
       expect(saveButton).toBeDisabled();

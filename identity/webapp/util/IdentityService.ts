@@ -20,9 +20,31 @@ export class IdentityService {
     };
   }
 
+  static async validate(
+    accessToken: string,
+    password: string
+  ): Promise<AxiosResponse<UserInfo>> {
+    return axios.post(
+      this.url('/users/me/validate'),
+      { password },
+      this.config(accessToken)
+    );
+  }
+
   static async getUserInfo(
     accessToken: string
   ): Promise<AxiosResponse<UserInfo>> {
     return axios.get(this.url('/users/me'), this.config(accessToken));
+  }
+
+  static async updateUserInfo(
+    accessToken: string,
+    newUserInfo: Partial<UserInfo>
+  ): Promise<AxiosResponse> {
+    return axios.put(
+      this.url('/users/me'),
+      newUserInfo,
+      this.config(accessToken)
+    );
   }
 }

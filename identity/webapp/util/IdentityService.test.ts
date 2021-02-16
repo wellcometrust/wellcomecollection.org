@@ -34,4 +34,48 @@ describe('IdentityService', () => {
       })
     );
   });
+
+  it('updates the current user info', async () => {
+    const mockResponse = {
+      status: 200,
+    };
+    mockedAxios.put.mockResolvedValue(mockResponse);
+
+    expect(
+      await IdentityService.updateUserInfo('ACCESS_TOKEN', {
+        email: 'tony@starkindustries.com',
+      })
+    ).toEqual(mockResponse);
+    expect(mockedAxios.put).toHaveBeenCalledWith(
+      'https://example.com/api/users/me',
+      { email: 'tony@starkindustries.com' },
+      expect.objectContaining({
+        headers: {
+          Authorization: 'Bearer ACCESS_TOKEN',
+          'x-api-key': 'SUPER_SECRET_KEY',
+        },
+      })
+    );
+  });
+
+  it('validates the current user', async () => {
+    const mockResponse = {
+      status: 200,
+    };
+    mockedAxios.post.mockResolvedValue(mockResponse);
+
+    expect(await IdentityService.validate('ACCESS_TOKEN', 'Password1')).toEqual(
+      mockResponse
+    );
+    expect(mockedAxios.post).toHaveBeenCalledWith(
+      'https://example.com/api/users/me/validate',
+      { password: 'Password1' },
+      expect.objectContaining({
+        headers: {
+          Authorization: 'Bearer ACCESS_TOKEN',
+          'x-api-key': 'SUPER_SECRET_KEY',
+        },
+      })
+    );
+  });
 });

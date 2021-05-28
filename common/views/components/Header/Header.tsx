@@ -1,7 +1,9 @@
 // @flow
-import { FunctionComponent, useState } from 'react';
+import { FunctionComponent, useState, useContext } from 'react';
 import { font, classNames } from '../../../utils/classnames';
 import WellcomeCollectionBlack from '../../../icons/wellcome_collection_black';
+import Space from '../styled/Space';
+import TogglesContext from '@weco/common/views/components/TogglesContext/TogglesContext';
 
 export const navHeight = 85;
 
@@ -44,78 +46,93 @@ export const links = [
 
 const Header: FunctionComponent<Props> = ({ siteSection }) => {
   const [isActive, setIsActive] = useState(false);
+  const showLogin = useContext(TogglesContext);
 
   return (
-    <div
-      className={classNames({
-        'header grid bg-white border-color-pumice border-bottom-width-1': true,
-        'header--is-burger-open': isActive,
-      })}
-      style={{
-        height: `${navHeight}px`,
-      }}
-    >
-      <div className="header__upper grid__cell">
-        <div className="header__inner container">
-          <div className="header__burger">
-            <a
-              href="#footer-nav-1"
-              id="header-burger-trigger"
-              className="header__burger-trigger"
-              aria-label="menu"
-              onClick={event => {
-                event.preventDefault();
-                setIsActive(!isActive);
-              }}
-            >
-              <span />
-              <span />
-              <span />
-            </a>
-          </div>
-          <div className="header__brand">
-            <a href="/" className="header__brand-link">
-              <WellcomeCollectionBlack />
-            </a>
-          </div>
-          <nav
-            id="header-nav"
-            className="header__nav"
-            aria-labelledby="header-burger-trigger"
+    <>
+      {showLogin && (
+        <div style={{ textAlign: 'right' }}>
+          <Space
+            h={{ size: 'l', properties: ['padding-right', 'padding-left'] }}
+            className={classNames({
+              'text-align-right': true,
+            })}
           >
-            <ul
-              className={`plain-list header__list ${font(
-                'wb',
-                5
-              )} no-margin no-padding`}
+            <a href="/account">Login</a>
+          </Space>
+        </div>
+      )}
+      <div
+        className={classNames({
+          'header grid bg-white border-color-pumice border-bottom-width-1': true,
+          'header--is-burger-open': isActive,
+        })}
+        style={{
+          height: `${navHeight}px`,
+        }}
+      >
+        <div className="header__upper grid__cell">
+          <div className="header__inner container">
+            <div className="header__burger">
+              <a
+                href="#footer-nav-1"
+                id="header-burger-trigger"
+                className="header__burger-trigger"
+                aria-label="menu"
+                onClick={event => {
+                  event.preventDefault();
+                  setIsActive(!isActive);
+                }}
+              >
+                <span />
+                <span />
+                <span />
+              </a>
+            </div>
+            <div className="header__brand">
+              <a href="/" className="header__brand-link">
+                <WellcomeCollectionBlack />
+              </a>
+            </div>
+            <nav
+              id="header-nav"
+              className="header__nav"
+              aria-labelledby="header-burger-trigger"
             >
-              {links.map((link, i) => (
-                <li
-                  className={`header__item ${
-                    link.siteSection === siteSection
-                      ? ' header__item--is-current'
-                      : ''
-                  }`}
-                  key={i}
-                >
-                  <a
-                    className="header__link"
-                    href={link.href}
-                    {...(link.siteSection === siteSection
-                      ? { 'aria-current': true }
-                      : {})}
+              <ul
+                className={`plain-list header__list ${font(
+                  'wb',
+                  5
+                )} no-margin no-padding`}
+              >
+                {links.map((link, i) => (
+                  <li
+                    className={`header__item ${
+                      link.siteSection === siteSection
+                        ? ' header__item--is-current'
+                        : ''
+                    }`}
+                    key={i}
                   >
-                    {link.title}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
-          {/* we leave this here until we know exactly what we want to do with search */}
-          <div id="header-search" className="header__search" />
+                    <a
+                      className="header__link"
+                      href={link.href}
+                      {...(link.siteSection === siteSection
+                        ? { 'aria-current': true }
+                        : {})}
+                    >
+                      {link.title}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+            {/* we leave this here until we know exactly what we want to do with search */}
+            <div id="header-search" className="header__search" />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

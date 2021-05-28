@@ -8,6 +8,12 @@ type ABTest = {
 export default {
   toggles: [
     {
+      id: 'showLogin',
+      title: 'Show a link to log in',
+      description: 'Shows a link to log in on /works',
+      defaultValue: false,
+    },
+    {
       id: 'showHoldingsOnWork',
       title: 'Show holdings on the work page',
       description: 'Shows the holding information for a work',

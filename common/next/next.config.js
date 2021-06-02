@@ -62,6 +62,21 @@ module.exports = function(webpack, assetPrefix) {
       return config;
     },
   });
+  const rewrites =
+    // process.env.NODE_ENV === 'development'
+    //   ?
+    [
+      {
+        source: '/test',
+        destination: '/works',
+      },
+
+      {
+        source: '/api/users/me',
+        destination: 'http://localhost:3000/api/users/me',
+      },
+    ];
+  // : [];
 
   return withMDX(
     withTM({
@@ -69,6 +84,9 @@ module.exports = function(webpack, assetPrefix) {
         ? `https://${prodSubdomain}.wellcomecollection.org`
         : '',
       ...withBundleAnalyzerConfig,
+      async rewrites() {
+        return rewrites;
+      },
     })
   );
 };

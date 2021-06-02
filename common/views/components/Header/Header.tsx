@@ -4,6 +4,7 @@ import { font, classNames } from '../../../utils/classnames';
 import WellcomeCollectionBlack from '../../../icons/wellcome_collection_black';
 import Space from '../styled/Space';
 import TogglesContext from '@weco/common/views/components/TogglesContext/TogglesContext';
+import { useUserInfo } from '@weco/identity/src/frontend/MyAccount/UserInfoContext';
 
 export const navHeight = 85;
 
@@ -47,10 +48,31 @@ export const links = [
 const Header: FunctionComponent<Props> = ({ siteSection }) => {
   const [isActive, setIsActive] = useState(false);
   const showLogin = useContext(TogglesContext);
+  const test = useUserInfo();
 
   return (
     <>
-      {showLogin && (
+      <pre
+        style={{
+          maxWidth: '600px',
+          margin: '0 auto 24px',
+          fontSize: '14px',
+        }}
+      >
+        <code
+          style={{
+            display: 'block',
+            padding: '24px',
+            backgroundColor: '#EFE1AA',
+            color: '#000',
+            border: '4px solid #000',
+            borderRadius: '6px',
+          }}
+        >
+          {JSON.stringify(test, null, 1)}
+        </code>
+      </pre>
+      {true && ( // TODO showLogin
         <div style={{ textAlign: 'right' }}>
           <Space
             h={{ size: 'l', properties: ['padding-right', 'padding-left'] }}
@@ -58,7 +80,8 @@ const Header: FunctionComponent<Props> = ({ siteSection }) => {
               'text-align-right': true,
             })}
           >
-            <a href="/account">Login</a>
+            {/* // TODO just /account */}
+            <a href="http://localhost:3000/account">Login</a>
           </Space>
         </div>
       )}

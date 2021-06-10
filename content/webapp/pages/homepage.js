@@ -45,7 +45,9 @@ const PageHeading = styled(Space).attrs({
   className: classNames({
     [font('wb', 1)]: true,
   }),
-})``;
+})`
+  background: ${props => (props.theme.isWebfont ? 'dodgerblue' : 'hotpink')};
+`;
 
 const CreamBox = styled(Space).attrs({
   h: { size: 'l', properties: ['padding-left', 'padding-right'] },

@@ -36,6 +36,7 @@ import { GlobalInfoBarContextProvider } from '../components/GlobalInfoBarContext
 
 type State = {|
   togglesContext: {},
+  isWebfont: boolean,
 |};
 
 const isServer = typeof window === 'undefined';
@@ -98,7 +99,7 @@ function openingHoursToOpeningHoursSpecification(openingHours: OpeningHours) {
   return {
     openingHoursSpecification:
       openingHours && openingHours.regular
-        ? openingHours.regular.map((openingHoursDay) => {
+        ? openingHours.regular.map(openingHoursDay => {
             const specObject = objToJsonLd(
               openingHoursDay,
               'OpeningHoursSpecification',
@@ -111,7 +112,7 @@ function openingHoursToOpeningHoursSpecification(openingHours: OpeningHours) {
     specialOpeningHoursSpecification:
       openingHours &&
       openingHours.exceptional &&
-      openingHours.exceptional.map((openingHoursDate) => {
+      openingHours.exceptional.map(openingHoursDate => {
         const specObject = {
           opens: openingHoursDate.opens,
           closes: openingHoursDate.closes,
@@ -206,6 +207,7 @@ export default class WecoApp extends App {
 
   state: State = {
     togglesContext: toggles,
+    isWebfont: false,
   };
 
   componentWillUnmount() {
@@ -225,6 +227,7 @@ export default class WecoApp extends App {
   componentDidMount() {
     this.setState({
       togglesContext: toggles,
+      isWebfont: false,
     });
 
     makeSurePageIsTallEnough();
@@ -288,9 +291,12 @@ export default class WecoApp extends App {
         if (document.documentElement) {
           document.documentElement.classList.add('fonts-loaded');
           const webfontTest = document.getElementById('webfont-test');
-          const webfontTestHeight = webfontTest.getBoundingClientRect().height;
-          const isLocal = webfontTestHeight <= 55;
-          console.log({ isLocal });
+          const webfontTestHeight =
+            webfontTest && webfontTest.getBoundingClientRect().height;
+          // 50px helvetica neue system = ~60px height
+          // 50px helvetica neue webfont = ~95px height
+          const isWebfont = webfontTestHeight && webfontTestHeight >= 70;
+          this.setState({ isWebfont });
         }
       })
       .catch(console.log);
@@ -303,7 +309,7 @@ export default class WecoApp extends App {
       const prismicScript = document.createElement('script');
       prismicScript.src = '//static.cdn.prismic.io/prismic.min.js';
       document.head && document.head.appendChild(prismicScript);
-      (function () {
+      (function() {
         var validationBar = document.createElement('div');
         validationBar.style.position = 'fixed';
         validationBar.style.width = '375px';
@@ -338,7 +344,7 @@ export default class WecoApp extends App {
         }
 
         if (validationFails.length > 0) {
-          validationFails.forEach(function (validationFail) {
+          validationFails.forEach(function(validationFail) {
             var div = document.createElement('div');
             div.style.marginBottom = '6px';
             div.innerHTML = validationFail;
@@ -355,7 +361,7 @@ export default class WecoApp extends App {
         const oldSafari = /^.*Version\/[0-8].*Safari.*$/;
         const bingPreview = /^.*BingPreview.*$/;
 
-        return ![oldSafari, bingPreview].some((r) =>
+        return ![oldSafari, bingPreview].some(r =>
           r.test(window.navigator.userAgent)
         );
       },
@@ -373,7 +379,7 @@ export default class WecoApp extends App {
   }
 
   render() {
-    const { togglesContext } = this.state;
+    const { togglesContext, isWebfont } = this.state;
     const {
       Component,
       pageProps,
@@ -479,7 +485,7 @@ export default class WecoApp extends App {
               <OpeningTimesContext.Provider value={parsedOpeningTimes}>
                 <GlobalAlertContext.Provider value={globalAlert}>
                   <PopupDialogContext.Provider value={popupDialog}>
-                    <ThemeProvider theme={theme}>
+                    <ThemeProvider theme={{ ...theme, isWebfont }}>
                       <GlobalStyle />
                       <OutboundLinkTracker>
                         <Fragment>
@@ -492,9 +498,9 @@ export default class WecoApp extends App {
                                     __html: `
                                     @font-face {
                                       font-family: 'Helvetica Neue Light Web';
-                                        src: local('Helvetica Neuef'),
+                                      src: local('Helvetica Neue'),
                                         url('https://i.wellcomecollection.org/assets/fonts/helvetica-neue-roman.woff2') format('woff2'),
-                                          url('https://i.wellcomecollection.org/assets/fonts/helvetica-neue-roman.woff') format('woff');
+                                        url('https://i.wellcomecollection.org/assets/fonts/helvetica-neue-roman.woff') format('woff');
                                       font-weight: normal;
                                       font-style: normal;
                                     }
@@ -515,12 +521,23 @@ export default class WecoApp extends App {
                           <LoadingIndicator />
                           {!pageProps.statusCode && (
                             <>
-                              <span
-                                id="webfont-test"
-                                className="font-hnl font-size-0 border-bottom-width-2 border-color-black"
+                              <div
+                                style={{
+                                  position: 'fixed',
+                                  bottom: '100%',
+                                }}
                               >
-                                A
-                              </span>
+                                <span
+                                  id="webfont-test"
+                                  aria-hidden="true"
+                                  style={{
+                                    fontFamily: 'Helvetica Neue Light Web',
+                                    fontSize: '50px',
+                                  }}
+                                >
+                                  A
+                                </span>
+                              </div>
                               <Component {...pageProps} />
                             </>
                           )}

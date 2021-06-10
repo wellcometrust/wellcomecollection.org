@@ -98,7 +98,7 @@ function openingHoursToOpeningHoursSpecification(openingHours: OpeningHours) {
   return {
     openingHoursSpecification:
       openingHours && openingHours.regular
-        ? openingHours.regular.map(openingHoursDay => {
+        ? openingHours.regular.map((openingHoursDay) => {
             const specObject = objToJsonLd(
               openingHoursDay,
               'OpeningHoursSpecification',
@@ -111,7 +111,7 @@ function openingHoursToOpeningHoursSpecification(openingHours: OpeningHours) {
     specialOpeningHoursSpecification:
       openingHours &&
       openingHours.exceptional &&
-      openingHours.exceptional.map(openingHoursDate => {
+      openingHours.exceptional.map((openingHoursDate) => {
         const specObject = {
           opens: openingHoursDate.opens,
           closes: openingHoursDate.closes,
@@ -287,6 +287,10 @@ export default class WecoApp extends App {
       .then(() => {
         if (document.documentElement) {
           document.documentElement.classList.add('fonts-loaded');
+          const webfontTest = document.getElementById('webfont-test');
+          const webfontTestHeight = webfontTest.getBoundingClientRect().height;
+          const isLocal = webfontTestHeight <= 55;
+          console.log({ isLocal });
         }
       })
       .catch(console.log);
@@ -299,7 +303,7 @@ export default class WecoApp extends App {
       const prismicScript = document.createElement('script');
       prismicScript.src = '//static.cdn.prismic.io/prismic.min.js';
       document.head && document.head.appendChild(prismicScript);
-      (function() {
+      (function () {
         var validationBar = document.createElement('div');
         validationBar.style.position = 'fixed';
         validationBar.style.width = '375px';
@@ -334,7 +338,7 @@ export default class WecoApp extends App {
         }
 
         if (validationFails.length > 0) {
-          validationFails.forEach(function(validationFail) {
+          validationFails.forEach(function (validationFail) {
             var div = document.createElement('div');
             div.style.marginBottom = '6px';
             div.innerHTML = validationFail;
@@ -351,7 +355,7 @@ export default class WecoApp extends App {
         const oldSafari = /^.*Version\/[0-8].*Safari.*$/;
         const bingPreview = /^.*BingPreview.*$/;
 
-        return ![oldSafari, bingPreview].some(r =>
+        return ![oldSafari, bingPreview].some((r) =>
           r.test(window.navigator.userAgent)
         );
       },
@@ -488,20 +492,17 @@ export default class WecoApp extends App {
                                     __html: `
                                     @font-face {
                                       font-family: 'Helvetica Neue Light Web';
-                                      src: local('Helvetica Neue Regular'),
-                                        local('HelveticaNeue-Regular'),
-                                        url('https://i.wellcomecollection.org/assets/fonts/d460c8dd-ab48-422e-ac1c-d9b6392b605a.woff2') format('woff2'),
-                                        url('https://i.wellcomecollection.org/assets/fonts/955441c8-2039-4256-bf4a-c475c31d1c0d.woff') format('woff');
+                                        src: local('Helvetica Neuef'),
+                                        url('https://i.wellcomecollection.org/assets/fonts/helvetica-neue-roman.woff2') format('woff2'),
+                                          url('https://i.wellcomecollection.org/assets/fonts/helvetica-neue-roman.woff') format('woff');
                                       font-weight: normal;
                                       font-style: normal;
                                     }
 
                                     @font-face {
                                       font-family: 'Helvetica Neue Medium Web';
-                                      src: local('Helvetica Neue Bold'),
-                                        local('HelveticaNeue-Bold'),
-                                        url('https://i.wellcomecollection.org/assets/fonts/455d1f57-1462-4536-aefa-c13f0a67bbbe.woff2') format('woff2'),
-                                        url('https://i.wellcomecollection.org/assets/fonts/fd5c4818-7809-4a21-a48d-a0dc15aa47b8.woff') format('woff');
+                                      src: url('https://i.wellcomecollection.org/assets/fonts/helvetica-neue-bold.woff2') format('woff2'),
+                                        url('https://i.wellcomecollection.org/assets/fonts/helvetica-neue-bold.woff') format('woff');
                                       font-weight: normal;
                                       font-style: normal;
                                     }
@@ -513,7 +514,15 @@ export default class WecoApp extends App {
                           </TogglesContext.Consumer>
                           <LoadingIndicator />
                           {!pageProps.statusCode && (
-                            <Component {...pageProps} />
+                            <>
+                              <span
+                                id="webfont-test"
+                                className="font-hnl font-size-0 border-bottom-width-2 border-color-black"
+                              >
+                                A
+                              </span>
+                              <Component {...pageProps} />
+                            </>
                           )}
                         </Fragment>
                       </OutboundLinkTracker>
